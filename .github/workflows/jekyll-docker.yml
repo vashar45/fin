@@ -18,3 +18,11 @@ jobs:
         docker run \
         -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
         jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+        - name: Deploy to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host:13.201.194.233
+          username: ec2-user  # Default username for Amazon Linux
+          key: ${{ secrets.EC2_SSH_KEY }}  # Your private key stored in GitHub Secrets
+          source: "_site/*"  # Source built Jekyll site
+          target: "/var/www/html"
